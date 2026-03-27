@@ -1,7 +1,7 @@
 name: Sync and Obfuscate
 on:
   schedule:
-    - cron: "0 3 * * *"
+    - cron: "0 6 * * *"
   workflow_dispatch:
   push:
     branches:
@@ -15,14 +15,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
       - name: Set up Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '22'
       - name: Install Obfuscator
         run: npm install javascript-obfuscator
       - name: Download and overwrite files
@@ -89,11 +89,11 @@ jobs:
           node obfuscate.js
       - name: Commit and push changes
         run: |
+          rm -f "明文源吗"
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add "明文源吗" wrangler.toml "_worker.js"
-
+          git rm --cached "明文源吗" 2>/dev/null || true
+          git add wrangler.toml "_worker.js"
           if git diff --staged --quiet; then
             echo "No changes, skipping."
           else
